@@ -1,15 +1,13 @@
 package com.mmorpg.project_pt.domain;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
+@Table(name = "personagem")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,38 +16,35 @@ public class Personagem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idPersonagem;
 
-    @Column(nullable = false)
-    private String nome;
-
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
+    @NotNull
     private String classe;
 
     @Column(nullable = false)
-    private int ataque;
+    private int nivel = 1;
 
     @Column(nullable = false)
-    private int defesa;
+    private int ataque = 0;
 
     @Column(nullable = false)
-    private int magia;
+    private int defesa = 0;
 
     @Column(nullable = false)
-    private int espirito;
+    private int magia = 0;
 
     @Column(nullable = false)
-    private int nivel;
+    private int espirito = 0;
 
-
-    // Cardinalidade ManyToOne (obrigatórias)
+    // Relacionamentos ManyToOne
     @ManyToOne(optional = false)
     @JoinColumn(name = "id_jogador", nullable = false)
+    @NotNull
     private Jogador jogador;
 
     @ManyToOne
     @JoinColumn(name = "id_cla")
     private Cla cla;
 
-    // Equipamentos (opcionais - personagem pode não ter equipado)
     @ManyToOne
     @JoinColumn(name = "id_arma")
     private Equipamento arma;
@@ -66,11 +61,10 @@ public class Personagem {
     @JoinColumn(name = "id_acessorio2")
     private Equipamento acessorio2;
 
-    // Cardinalidades OneToMany (bolsa de itens)
+    // Relacionamentos OneToMany
     @OneToMany(mappedBy = "personagem", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<BolsaItem> bolsaItens = new ArrayList<>();
 
-    // Cardinalidades OneToMany (habilidades)
     @OneToMany(mappedBy = "personagem", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<PersonagemHabilidade> personagemHabilidades = new ArrayList<>();
 }

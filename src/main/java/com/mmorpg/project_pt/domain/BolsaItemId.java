@@ -7,7 +7,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BolsaItemId implements Serializable {
-
     private Long personagem;
     private Long item;
 }

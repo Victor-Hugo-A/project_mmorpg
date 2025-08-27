@@ -4,8 +4,8 @@ import lombok.*;
 import java.io.Serializable;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class PersonagemHabilidadeId implements Serializable {
     private Long personagem;
     private Long habilidade;
