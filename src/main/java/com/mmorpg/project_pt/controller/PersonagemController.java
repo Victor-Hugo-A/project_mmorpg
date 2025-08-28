@@ -5,6 +5,7 @@ import com.mmorpg.project_pt.dto.CriarPersonagemDTO;
 import com.mmorpg.project_pt.dto.UpdatePersonagemDTO;
 import com.mmorpg.project_pt.service.PersonagemService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -22,9 +23,15 @@ public class PersonagemController {
     }
 
     @PostMapping
-    public ResponseEntity<Personagem> criar(@RequestBody CriarPersonagemDTO dto) {
-        Personagem personagem = personagemService.criar(dto);
-        return ResponseEntity.ok(personagem);
+    public ResponseEntity<String> criar(@RequestBody CriarPersonagemDTO dto) {
+        try {
+            personagemService.criar(dto);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
+        }
+
     }
 
     @PutMapping("/{id}")
@@ -33,7 +40,13 @@ public class PersonagemController {
     }
 
     @DeleteMapping("/{id}")
-    public void deletar(@PathVariable Long id) {
-        personagemService.deletar(id);
+    public ResponseEntity<?> deletar(@PathVariable Long id) {
+        try {
+            personagemService.deletar(id);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+        }
     }
 }

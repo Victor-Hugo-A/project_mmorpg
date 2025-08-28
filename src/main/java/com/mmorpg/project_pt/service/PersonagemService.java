@@ -63,6 +63,9 @@ public class PersonagemService {
     }
 
     public void deletar(Long id) {
+        if (!personagemRepository.existsById(id)) {
+            throw new RuntimeException("Personagem não encontrado com ID: " + id);
+        }
         personagemRepository.deleteById(id);
     }
 }
