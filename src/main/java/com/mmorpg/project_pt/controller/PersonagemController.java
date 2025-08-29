@@ -47,35 +47,77 @@ public class PersonagemController {
     }
 
     @PostMapping
-    public ResponseEntity<String> criar(@RequestBody CriarPersonagemDTO dto) {
+    public ResponseEntity<Object> criar(@RequestBody CriarPersonagemDTO dto) {
         try {
-            personagemService.criar(dto);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(e.getMessage());
+            Personagem personagemCriado = personagemService.criar(dto);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Personagem criado com sucesso");
+            response.put("data", personagemCriado);
+            response.put("timestamp", LocalDateTime.now().toString());
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+
+        } catch (RuntimeException e) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("success", false);
+            errorResponse.put("message", e.getMessage());
+            errorResponse.put("timestamp", LocalDateTime.now().toString());
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> editar(@PathVariable Long id, @RequestBody UpdatePersonagemDTO dto) {
         try {
-            personagemService.editar(id, dto);
-            return ResponseEntity.ok().body("Personagem atualizado com sucesso");
+            Personagem personagemAtualizado = personagemService.editar(id, dto);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Personagem atualizado com sucesso");
+            response.put("data", personagemAtualizado);
+            response.put("timestamp", LocalDateTime.now().toString());
+
+            return ResponseEntity.ok().body(response);
+
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).
-                    body(e.getMessage());
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("success", false);
+            errorResponse.put("message", e.getMessage());
+            errorResponse.put("timestamp", LocalDateTime.now().toString());
+
+            if (e.getMessage().contains("não encontrado")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+            }
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletar(@PathVariable Long id) {
+    public ResponseEntity<Object> deletar(@PathVariable Long id) {
         try {
             personagemService.deletar(id);
-            return ResponseEntity.ok().body("Personagem deletado com sucesso");
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Personagem deletado com sucesso");
+            response.put("deletedId", id);
+            response.put("timestamp", LocalDateTime.now().toString());
+
+            return ResponseEntity.ok().body(response);
+
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(e.getMessage());
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("success", false);
+            errorResponse.put("message", e.getMessage());
+            errorResponse.put("timestamp", LocalDateTime.now().toString());
+
+            if (e.getMessage().contains("não encontrado")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+            }
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
 }
