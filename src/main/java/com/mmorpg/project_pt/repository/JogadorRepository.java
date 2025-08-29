@@ -4,4 +4,7 @@ import com.mmorpg.project_pt.domain.Jogador;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface JogadorRepository extends JpaRepository<Jogador, Long> {
+    static boolean existsByEmail(String email) {
+        return false;
+    }
 }
