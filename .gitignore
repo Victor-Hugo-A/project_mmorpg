@@ -31,3 +31,30 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Build ###
+out/
+
+### Logs ###
+*.log
+
+### OS ###
+.DS_Store
+Thumbs.db
+
+### Arquivos temporários ###
+*.tmp
+*.swp
+
+### Arquivos sensíveis de configuração Spring ###
+# Ignorar o principal
+src/main/resources/application.properties
+src/main/resources/application.yml
+
+# Ignorar todos os perfis (application-dev.properties, application-prod.yml, etc.)
+**/application-*.properties
+**/application-*.yml
+
+# Caso use secrets em JSON/YAML
+**/secrets.yml
+**/secrets.json
