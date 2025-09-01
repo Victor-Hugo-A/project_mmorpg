@@ -27,9 +27,9 @@ public class Equipamento extends Item {
     @Column(nullable = false)
     private int espirito;
 
-    @Column(nullable = false, length = 50)
-    @NotNull
-    private String categoria; // arma, armadura, acessório
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_categoria", nullable = false)
+    private Categoria categoria;
 
     @OneToMany(mappedBy = "arma", fetch = FetchType.LAZY)
     private List<Personagem> personagensComArma = new ArrayList<>();

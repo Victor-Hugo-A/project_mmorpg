@@ -33,4 +33,31 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<Object> handleRuntimeException(RuntimeException e) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", false);
+        response.put("timestamp", LocalDateTime.now().toString());
+
+        // Definir código de erro e status
+        HttpStatus status;
+        String errorCode;
+
+        if (e.getMessage() != null && e.getMessage().contains("não encontrado")) {
+            status = HttpStatus.NOT_FOUND;
+            errorCode = "RECURSO_NAO_ENCONTRADO";
+            response.put("message", e.getMessage());
+            response.put("details", List.of("O recurso solicitado não foi encontrado."));
+        } else {
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+            errorCode = "ERRO_INTERNO";
+            response.put("message", "Ocorreu um erro inesperado.");
+            response.put("details", List.of(e.getMessage()));
+        }
+
+        response.put("error", errorCode);
+
+        return ResponseEntity.status(status).body(response);
+    }
 }
