@@ -3,10 +3,13 @@ package com.mmorpg.project_pt.controller;
 import com.mmorpg.project_pt.domain.Jogador;
 import com.mmorpg.project_pt.dto.CriarJogadorDTO;
 import com.mmorpg.project_pt.dto.UpdateJogadorDTO;
+import com.mmorpg.project_pt.exception.GlobalExceptionHandler;
 import com.mmorpg.project_pt.service.JogadorService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -14,6 +17,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/jogadores")
@@ -92,7 +96,9 @@ public class JogadorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> atualizarCompleto(@PathVariable Long id, @RequestBody UpdateJogadorDTO dto) {
+    public ResponseEntity<Object> atualizarCompleto(
+            @PathVariable Long id, @Valid @RequestBody UpdateJogadorDTO dto) {
+
         try {
             Jogador jogadorAtualizado = jogadorService.atualizar(id, dto);
 
