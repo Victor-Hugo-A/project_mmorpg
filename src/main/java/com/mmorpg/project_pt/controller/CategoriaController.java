@@ -1,54 +1,48 @@
 package com.mmorpg.project_pt.controller;
 
 import com.mmorpg.project_pt.domain.Categoria;
+import com.mmorpg.project_pt.dto.CategoriaDTO;
+import com.mmorpg.project_pt.dto.CategoriaResponseCompletoDTO;
+import com.mmorpg.project_pt.dto.CategoriaResponseDTO;
+import com.mmorpg.project_pt.dto.UpdateCategoriaDTO;
 import com.mmorpg.project_pt.service.CategoriaService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/categorias")
+@RequestMapping("/categorias")
 @RequiredArgsConstructor
 public class CategoriaController {
+
     private final CategoriaService categoriaService;
 
-    @GetMapping
-    public ResponseEntity<List<Categoria>> getAllCategorias() {
-        return ResponseEntity.ok(categoriaService.findAll());
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Categoria> getCategoriaById(@PathVariable Long id) {
-        return categoriaService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
     @PostMapping
-    public ResponseEntity<Categoria> createCategoria(@Valid @RequestBody Categoria categoria) {
-        if (categoriaService.existsByNome(categoria.getNome())) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(categoriaService.save(categoria));
+    public ResponseEntity<CategoriaResponseDTO> criar(@RequestBody CategoriaDTO dto) {
+        return ResponseEntity.ok(categoriaService.criarCategoria(dto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Categoria> updateCategoria(@PathVariable Long id, @Valid @RequestBody Categoria categoria) {
-        if (categoriaService.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        categoria.setIdCategoria(id);
-        return ResponseEntity.ok(categoriaService.save(categoria));
+    public ResponseEntity<Categoria> atualizar(@PathVariable Long id, @RequestBody UpdateCategoriaDTO dto) {
+        return ResponseEntity.ok(categoriaService.atualizarCategoria(id, dto));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<CategoriaResponseDTO>> listar() {
+        return ResponseEntity.ok(categoriaService.listarCategorias());
+    }
+
+    // Busca por id usando DTO completo
+    @GetMapping("/{id}")
+    public ResponseEntity<CategoriaResponseCompletoDTO> buscarPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(categoriaService.buscarPorIdCompleto(id));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCategoria(@PathVariable Long id) {
-        if (categoriaService.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        categoriaService.deleteById(id);
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        categoriaService.deletarCategoria(id);
         return ResponseEntity.noContent().build();
     }
 }

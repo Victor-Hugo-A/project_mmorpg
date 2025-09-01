@@ -1,25 +1,27 @@
 package com.mmorpg.project_pt.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
 @Table(name = "personagem_habilidade")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@IdClass(PersonagemHabilidadeId.class)
+@EqualsAndHashCode(of = "id")
 public class PersonagemHabilidade {
-    @Id
+
+    @EmbeddedId
+    private PersonagemHabilidadeId id;
+
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("personagemId") // mapeia a FK dentro da chave composta
     @JoinColumn(name = "id_personagem", nullable = false)
-    @NotNull
     private Personagem personagem;
 
-    @Id
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("habilidadeId") // mapeia a FK dentro da chave composta
     @JoinColumn(name = "id_habilidade", nullable = false)
-    @NotNull
     private Habilidade habilidade;
 }

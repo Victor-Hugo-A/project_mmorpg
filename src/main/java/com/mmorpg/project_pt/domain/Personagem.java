@@ -174,5 +174,6 @@ public class Personagem {
     }
 
     public void adicionarItem(Item item, int quantidade) {
+
     }
 }

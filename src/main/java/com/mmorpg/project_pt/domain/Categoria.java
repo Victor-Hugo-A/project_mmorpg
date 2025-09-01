@@ -16,10 +16,10 @@ public class Categoria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idCategoria;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 50)
     private String nome;
 
-    @Column(length = 255)
+    @Column(length = 50)
     private String descricao;
 
     @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
